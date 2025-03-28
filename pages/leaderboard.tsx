@@ -16,12 +16,41 @@ import {
   IconCurrencyDollar,
   IconChartBar,
 } from "@tabler/icons-react";
-import { useState } from "react";
-import { LeaderboardTable } from "../components/Leaderboard";
+import { useEffect, useState } from "react";
+import { LeaderboardTable, MinerUser } from "../components/Leaderboard";
 import { mockMiners } from "../utils/mockData";
+import { getMinerRankings } from "../utils/earnings";
 
 const LeaderboardPage: NextPage = () => {
   const [timeframe, setTimeframe] = useState("daily");
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null);
+  const [miners, setMiners] = useState<MinerUser[]>([]);
+  const [totalDailyEarnings, setTotalDailyEarnings] = useState<number>(0);
+  const [totalWeeklyEarnings, setTotalWeeklyEarnings] = useState<number>(0);
+
+  useEffect(() => {
+    const fetchMiners = async () => {
+      try {
+        setLoading(true);
+        const fetchedMiners = await getMinerRankings();
+        setMiners(fetchedMiners);
+        const dailyTotal = fetchedMiners.reduce((sum, miner) => sum + miner.dailyEarnings, 0);
+        const weeklyTotal = fetchedMiners.reduce((sum, miner) => sum + miner.weeklyEarnings, 0);
+
+        setTotalDailyEarnings(+dailyTotal.toFixed(4));
+        setTotalWeeklyEarnings(+weeklyTotal.toFixed(4));
+        setError(null)
+      } catch (err) {
+        setError('Failed to load miner rankings');
+        console.error(err);
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchMiners();
+  }, [])
 
   return (
     <Container size="lg" py="sm">
@@ -179,7 +208,7 @@ const LeaderboardPage: NextPage = () => {
               </Text>
             </Flex>
 
-            <LeaderboardTable users={mockMiners} />
+            <LeaderboardTable users={miners} />
           </Stack>
         </Paper>
 
@@ -230,11 +259,11 @@ const LeaderboardPage: NextPage = () => {
             <Text fw={500}>Earnings Statistics</Text>
           </Group>
           <Text mt="md">
-            Total Network Earnings: 2.4432 Tao{" "}
+            Total Network Earnings:{" "}
             {timeframe === "daily"
-              ? "today"
+              ? `${totalDailyEarnings} today`
               : timeframe === "weekly"
-                ? "this week"
+                ? `${totalWeeklyEarnings} this week`
                 : "this month"}
           </Text>
         </Paper>
