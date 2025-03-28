@@ -110,7 +110,6 @@ const SubmitEarningsPage: NextPage = () => {
           placeholder={loading ? "Loading miners..." : "Select miner"}
           disabled={loading || submitting}
           withAsterisk
-          icon={<IconUser size={18} />}
           data={miners.map(miner => ({
             value: String(miner.id),
             label: miner.name
@@ -123,11 +122,9 @@ const SubmitEarningsPage: NextPage = () => {
           label="Tao Earned"
           placeholder="0.0000"
           disabled={loading || submitting}
-          precision={4}
           step={0.0001}
           min={0}
           withAsterisk
-          icon={<IconCoin size={18} />}
           {...form.getInputProps(`employees.${index}.amount`)}
         />
       </Box>
@@ -213,7 +210,6 @@ const SubmitEarningsPage: NextPage = () => {
                     step={0.01}
                     min={0}
                     withAsterisk
-                    icon={<IconCoin size={18} />}
                     {...form.getInputProps('taoPrice')}
                   />
                 </Group>
