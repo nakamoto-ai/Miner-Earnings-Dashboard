@@ -80,7 +80,7 @@ const neoLightBlue: MantineColorsTuple = [
   "#87ceeb",
   "#78D0E9",
   "#69d2e7",
-  "#77df9ff",
+  "#7df9ff",
   "#15A9C5",
 ];
 
@@ -276,5 +276,19 @@ export const theme = createTheme({
         },
       }),
     },
+
+    Input: {
+      styles: () => ({
+                          input: { 
+                            border: '2px solid #000',
+                            fontWeight: 500,
+                          },
+                          label: { 
+                            fontSize: 16, 
+                            fontWeight: 700,
+                            marginBottom: 5,
+                          },
+      })
+    }
   },
 });
